@@ -68,6 +68,7 @@ class nYnabConnection(object):
         self.session.headers['Accept'] = 'application/json, text/javascript, */*; q=0.01'
         self.session.headers['Accept-Encoding'] = 'gzip, deflate, br'
         self.session.headers['Origin'] = 'https://app.youneedabudget.com'
+        r = self.session.post(self.urlCatalog, params)
         self.lastrequest_elapsed = r.elapsed
         js = r.json()
         if r.status_code == 500:
