@@ -60,6 +60,8 @@ class nYnabClient_(Base):
 
     def sync(self, update_keys=None):
         LOG.debug('Client.sync')
+        if update_keys is not None:
+            update_keys.append('ce_budget_versions')
 
         self.catalogClient.sync(update_keys)
         self.select_budget(self.budget_name)
@@ -84,8 +86,10 @@ class nYnabClient_(Base):
         if any(catalog_changed_entities) or any(budget_changed_entities):
             self.ending_device_knowledge = self.starting_device_knowledge + 1
 
-        self.catalogClient.push()
-        self.budgetClient.push()
+        if any(catalog_changed_entities):
+            self.catalogClient.push()
+        if any(budget_changed_entities):
+            self.budgetClient.push()
 
         self.starting_device_knowledge = self.ending_device_knowledge
         self.session.commit()

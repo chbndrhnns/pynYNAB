@@ -25,7 +25,8 @@ class nYnabConnection(object):
         self.session.cookies = RequestsCookieJar()
 
         self.session.headers['X-YNAB-Device-Id'] = self.id
-        self.session.headers['User-Agent'] = 'python nYNAB API bot - rienafairefr rienafairefr@gmail.com'
+        #self.session.headers['User-Agent'] = 'python nYNAB API bot - rienafairefr rienafairefr@gmail.com'
+        self.session.headers['User-Agent'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36'
 
         firstlogin = self.dorequest({"email": self.email, "password": self.password, "remember_me": True,
                                      "device_info": {"id": self.id}}, 'loginUser')
@@ -59,10 +60,14 @@ class nYnabConnection(object):
             LOG.error(message.replace(self.password,'********'))
             raise NYnabConnectionError(message)
 
-        json_request_dict = json.dumps(request_dic, cls=ComplexEncoder)
+        json_request_dict = json.dumps(request_dic, cls=ComplexEncoder, separators=(',', ':'))
         params = {u'operation_name': opname, 'request_data': json_request_dict}
         LOG.debug(('%s  ... %s ' % (opname, params)).replace(self.password,'********'))
-        r = self.session.post(self.urlCatalog, params)
+        self.session.headers['X-YNAB-Client-Request-Id'] = generateuuid()
+        self.session.headers['X-YNAB-Client-App-Version'] = 'v1.16300'
+        self.session.headers['Accept'] = 'application/json, text/javascript, */*; q=0.01'
+        self.session.headers['Accept-Encoding'] = 'gzip, deflate, br'
+        self.session.headers['Origin'] = 'https://app.youneedabudget.com'
         self.lastrequest_elapsed = r.elapsed
         js = r.json()
         if r.status_code == 500:
@@ -87,5 +92,5 @@ class nYnabConnection(object):
             sleep(float(retryrafter))
             return self.dorequest(request_dic, opname)
         else:
-            errorout('Unknown API Error \"%s\" was returned from the API when sending request (%s)' % (error['id'], params))
+            errorout('Unknown API Error \"%s\" \"%s\" was returned from the API when sending request (%s)' % (error['id'], error['message'], params))
 

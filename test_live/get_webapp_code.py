@@ -6,6 +6,7 @@ import jsbeautifier
 response = requests.get('http://app.youneedabudget.com')
 with open('index.html', 'w', encoding='utf-8') as file_before:
     file_before.write(response.text)
+os.makedirs('web_app')
 parsed = html.fromstring(response.text)
 for src in parsed.xpath('//script/@src'):
     url_src = str(src)
