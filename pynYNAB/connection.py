@@ -68,7 +68,11 @@ class nYnabConnection(object):
         self.session.headers['Accept'] = 'application/json, text/javascript, */*; q=0.01'
         self.session.headers['Accept-Encoding'] = 'gzip, deflate, br'
         self.session.headers['Origin'] = 'https://app.youneedabudget.com'
-        r = self.session.post(self.urlCatalog, params)
+        self.session.headers['X-Requested-With'] = 'XMLHttpRequest'
+        self.session.headers['Referer'] = 'https://app.youneedabudget.com/e96959a4-c600-409e-81c4-493b76cde50d/accounts/863d0f27-d510-49a0-8985-6df95f62e6bc'
+        self.session.headers['Content-Type']='application/x-www-form-urlencoded; charset=UTF-8'
+
+        r = self.session.post(self.urlCatalog, params, verify = "D:\Perso\FiddlerRoot.crt")
         self.lastrequest_elapsed = r.elapsed
         js = r.json()
         if r.status_code == 500:

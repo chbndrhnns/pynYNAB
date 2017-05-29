@@ -14,7 +14,7 @@ class LiveTests(CommonLive):
     def test_add_deletetransaction(self):
         from datetime import datetime
         transaction = Transaction(
-            amount=-1,
+            amount=0,
             memo='test',
             cleared='Uncleared',
             date=datetime.now(),

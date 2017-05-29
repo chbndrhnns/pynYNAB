@@ -9,10 +9,10 @@ client = clientfromargs(args)
 for account in client.budget.be_accounts:
     account0 = account
 
-#for transaction in client.budget.be_transactions:
-#    if not transaction.is_tombstone:
-#        client.delete_transaction(transaction)
-#        exit(0)
+for transaction in client.budget.be_transactions:
+    if transaction.memo == 'DUMMY2':
+        client.delete_transaction(transaction)
+        exit(0)
 
 transactions = [Transaction(
     amount=0,
